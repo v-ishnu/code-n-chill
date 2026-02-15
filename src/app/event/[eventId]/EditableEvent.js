@@ -1,11 +1,13 @@
 "use client";
 
+import Toast from "@/component/Toast";
 import { useState } from "react";
 
 export default function EditableEvent({ initialEvent }) {
   const [event, setEvent] = useState(initialEvent);
   const [isEditing, setIsEditing] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [toast, setToast] = useState(null);
 
   const handleChange = (e) => {
     setEvent({
@@ -19,23 +21,29 @@ export default function EditableEvent({ initialEvent }) {
       setLoading(true);
 
       const res = await fetch(
-        `https://api.codenchill.tech/api/v1/events/event-update/${event._id}`,
+        `${process.env.NEXT_PUBLIC_API_URL}/api/v1/events/event-update/${event._id}`,
         {
           method: "PUT",
           headers: {
             "Content-Type": "application/json",
           },
           body: JSON.stringify(event),
-        }
+        },
       );
 
       if (!res.ok) throw new Error("Update failed");
 
       setIsEditing(false);
-      alert("Event Updated Successfully!");
+      setToast({
+        message: "Event Updated Successfully!",
+        type: "success",
+      });
     } catch (err) {
       console.error(err);
-      alert("Update Failed");
+      setToast({
+        message: "Event Updated Failed!",
+        type: "error",
+      });
     } finally {
       setLoading(false);
     }
@@ -116,9 +124,7 @@ export default function EditableEvent({ initialEvent }) {
           <p>{event.location}</p>
         )}
 
-        <h2 className="text-xl font-semibold mt-4 mb-2">
-          Registration Fee
-        </h2>
+        <h2 className="text-xl font-semibold mt-4 mb-2">Registration Fee</h2>
 
         {isEditing ? (
           <input
@@ -161,6 +167,13 @@ export default function EditableEvent({ initialEvent }) {
           </button>
         )}
       </div>
+      {toast && (
+        <Toast
+          message={toast.message}
+          type={toast.type}
+          onClose={() => setToast(null)}
+        />
+      )}
     </div>
   );
 }

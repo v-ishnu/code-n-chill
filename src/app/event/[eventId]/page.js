@@ -4,7 +4,7 @@ import EditableEvent from "./EditableEvent";
 async function fetchEvent(id) {
   try {
     const res = await fetch(
-      `https://api.codenchill.tech/api/v1/events/get/${id}`,
+      `${process.env.NEXT_PUBLIC_API_URL}/api/v1/events/get/${id}`,
       { cache: "no-store" }
     );
 

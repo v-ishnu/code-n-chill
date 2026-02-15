@@ -8,13 +8,13 @@ export default function DashboardPage() {
   const [events, setEvents] = useState([]);
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [loading, setLoading] = useState(true);
-
+  
   // Fetch events on mount
   useEffect(() => {
     const fetchEvents = async () => {
       try {
         const res = await fetch(
-          "https://api.codenchill.tech/api/v1/events/all"
+          `${process.env.NEXT_PUBLIC_API_URL}/api/v1/events/all`
         );
 
         if (!res.ok) throw new Error("Failed to fetch");
