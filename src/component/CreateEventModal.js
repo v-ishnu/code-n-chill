@@ -51,7 +51,7 @@ export default function CreateEventModal({ onClose }) {
   const handleSubmit = async () => {
     try {
       const res = await fetch(
-        "http://localhost:8000/api/v1/events/event-create",
+        "https://api.codenchill.tech/api/v1/events/event-create",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },

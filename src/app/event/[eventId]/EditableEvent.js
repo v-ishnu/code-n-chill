@@ -19,7 +19,7 @@ export default function EditableEvent({ initialEvent }) {
       setLoading(true);
 
       const res = await fetch(
-        `http://localhost:8000/api/v1/events/event-update/${event._id}`,
+        `https://api.codenchill.tech/api/v1/events/event-update/${event._id}`,
         {
           method: "PUT",
           headers: {

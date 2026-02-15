@@ -16,7 +16,7 @@ export default function UsersPage() {
         setLoading(true);
 
         const res = await fetch(
-          `http://localhost:8000/api/v1/events/participation/${eventId}`,
+          `https://api.codenchill.tech/api/v1/events/participation/${eventId}`,
         );
 
         if (!res.ok) throw new Error("Failed to fetch participants");

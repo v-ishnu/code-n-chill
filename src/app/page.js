@@ -14,7 +14,7 @@ export default function DashboardPage() {
     const fetchEvents = async () => {
       try {
         const res = await fetch(
-          "http://localhost:8000/api/v1/events/all"
+          "https://api.codenchill.tech/api/v1/events/all"
         );
 
         if (!res.ok) throw new Error("Failed to fetch");
