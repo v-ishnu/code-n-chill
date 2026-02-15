@@ -1,0 +1,166 @@
+"use client";
+
+import { useState } from "react";
+
+export default function EditableEvent({ initialEvent }) {
+  const [event, setEvent] = useState(initialEvent);
+  const [isEditing, setIsEditing] = useState(false);
+  const [loading, setLoading] = useState(false);
+
+  const handleChange = (e) => {
+    setEvent({
+      ...event,
+      [e.target.name]: e.target.value,
+    });
+  };
+
+  const handleSave = async () => {
+    try {
+      setLoading(true);
+
+      const res = await fetch(
+        `http://localhost:8000/api/v1/events/event-update/${event._id}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(event),
+        }
+      );
+
+      if (!res.ok) throw new Error("Update failed");
+
+      setIsEditing(false);
+      alert("Event Updated Successfully!");
+    } catch (err) {
+      console.error(err);
+      alert("Update Failed");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className="min-h-screen bg-black text-white p-10">
+      {/* Cover Image */}
+      {isEditing ? (
+        <input
+          type="text"
+          name="coverImage"
+          value={event.coverImage}
+          onChange={handleChange}
+          className="w-full p-2 mb-4 bg-gray-800 rounded"
+        />
+      ) : (
+        <img
+          src={event.coverImage}
+          alt={event.title}
+          className="w-full max-h-[400px] object-cover rounded-xl mb-6"
+        />
+      )}
+
+      {/* Title */}
+      {isEditing ? (
+        <input
+          type="text"
+          name="title"
+          value={event.title}
+          onChange={handleChange}
+          className="text-4xl font-bold mb-4 bg-gray-800 p-2 rounded w-full"
+        />
+      ) : (
+        <h1 className="text-4xl font-bold mb-4">{event.title}</h1>
+      )}
+
+      {/* Date */}
+      {isEditing ? (
+        <input
+          type="date"
+          name="eventDate"
+          value={event.eventDate?.split("T")[0]}
+          onChange={handleChange}
+          className="bg-gray-800 p-2 rounded mb-4"
+        />
+      ) : (
+        <p className="text-gray-400 mb-4">
+          {new Date(event.eventDate).toLocaleDateString("en-IN")}
+        </p>
+      )}
+
+      {/* Description */}
+      {isEditing ? (
+        <textarea
+          name="longDescription"
+          value={event.longDescription}
+          onChange={handleChange}
+          className="w-full bg-gray-800 p-2 rounded mb-6"
+          rows={4}
+        />
+      ) : (
+        <p className="mb-6">{event.longDescription}</p>
+      )}
+
+      {/* Location */}
+      <div className="bg-gray-800 p-6 rounded-xl">
+        <h2 className="text-xl font-semibold mb-2">Location</h2>
+        {isEditing ? (
+          <input
+            type="text"
+            name="location"
+            value={event.location}
+            onChange={handleChange}
+            className="w-full bg-gray-700 p-2 rounded"
+          />
+        ) : (
+          <p>{event.location}</p>
+        )}
+
+        <h2 className="text-xl font-semibold mt-4 mb-2">
+          Registration Fee
+        </h2>
+
+        {isEditing ? (
+          <input
+            type="number"
+            name="registrationFee"
+            value={event.registrationFee}
+            onChange={handleChange}
+            className="w-full bg-gray-700 p-2 rounded"
+          />
+        ) : (
+          <p>₹ {event.registrationFee}</p>
+        )}
+      </div>
+
+      {/* Buttons */}
+      <div className="mt-6 flex gap-4">
+        {isEditing ? (
+          <>
+            <button
+              onClick={handleSave}
+              disabled={loading}
+              className="bg-green-600 px-6 py-2 rounded"
+            >
+              {loading ? "Saving..." : "Save"}
+            </button>
+
+            <button
+              onClick={() => setIsEditing(false)}
+              className="bg-red-600 px-6 py-2 rounded"
+            >
+              Cancel
+            </button>
+          </>
+        ) : (
+          <button
+            onClick={() => setIsEditing(true)}
+            className="bg-blue-600 px-6 py-2 rounded"
+          >
+            Edit Event
+          </button>
+        )}
+      </div>
+    </div>
+  );
+}
